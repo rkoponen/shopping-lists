@@ -1,0 +1,41 @@
+<% layout("./layouts/layout.eta")%>
+<a href="/lists">Shopping lists</a>
+
+<h2><%= it.list.name %></h2>
+
+<% const collectedItems = it.items.filter((item) => item.collected).sort(function (a,b) {
+  if (a.name < b.name) {
+    return -1
+  }
+  if (a.name > b.name) {
+    return 1
+  }
+  return 0
+}) %>
+<% const uncollectedItems = it.items.filter((item) => !item.collected).sort(function (a,b) {
+  if (a.name < b.name) {
+    return -1
+  }
+  if (a.name > b.name) {
+    return 1
+  }
+  return 0
+})%>
+
+<ul>
+  <% uncollectedItems.forEach((item) => {%>
+    <li><%= item.name%></li>
+    <form method="POST" action="/lists/<%= it.list.id %>/items/<%= item.id %>/collect">
+      <input type="submit" value="Mark collected!"/>
+    </form>
+  <%})%>
+  <% collectedItems.forEach((item) => {%>
+  <li><del><%= item.name %></del></li>
+  <%})%>
+</ul>
+
+<h3>Add items</h3>
+<form method="POST" action="/lists/<%= it.list.id %>/items" >
+  <input type="text" name="name"/>
+  <input type="submit" value="Add to list"/>
+</form>
